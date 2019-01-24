@@ -1,4 +1,10 @@
-# 在Dubbo中开发REST风格的远程调用（RESTful Remoting）
+---
+title: 在 Dubbo 中开发 REST 风格的远程调用（RESTful Remoting）
+keywords: RESTful Remoting, REST
+description: 在 Dubbo 中开发 REST 风格的远程调用
+---
+
+# 在 Dubbo 中开发 REST 风格的远程调用（RESTful Remoting）
 
 **作者：沈理**
 
@@ -107,7 +113,7 @@ dubbo支持多种远程调用方式，例如dubbo RPC（二进制序列化 + tcp
 需要指出的是，我认为1～3是dubbo的REST调用最有价值的三种应用场景，并且我们为dubbo添加REST调用，其最主要到目的也是面向服务的提供端，即开发REST服务来提供给非dubbo的（异构）消费端。
 
 归纳起来，所有应用场景如下图所示：
-![no image found](images/rest.jpg)
+![no image found](sources/images/rest.jpg)
 
 借用Java过去最流行的宣传语，为dubbo添加REST调用后，可以实现服务的”一次编写，到处访问“，理论上可以面向全世界开放，从而真正实现比较理想化的面向服务架构（SOA）。
 
@@ -449,7 +455,7 @@ public class User implements Serializable {
     </context-param>
     
     <listener>
-        <listener-class>com.alibaba.dubbo.remoting.http.servlet.BootstrapListener</listener-class>
+        <listener-class>org.apache.dubbo.remoting.http.servlet.BootstrapListener</listener-class>
     </listener>
     
     <listener>
@@ -458,7 +464,7 @@ public class User implements Serializable {
     
     <servlet>
         <servlet-name>dispatcher</servlet-name>
-        <servlet-class>com.alibaba.dubbo.remoting.http.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>org.apache.dubbo.remoting.http.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     
@@ -711,7 +717,7 @@ public class GZIPWriterInterceptor implements WriterInterceptor {
 <dubbo:protocol name="rest" port="8888" extension="xxx.TraceInterceptor, xxx.TraceFilter"/>
 ```
 
-在此，我们可以将Filter、Interceptor和DynamicFuture这三种类型的对象都添加到extension属性上，多个之间用逗号分隔。（DynamicFuture是另一个接口，可以方便我们更动态的启用Filter和Interceptor，感兴趣请自行google。）
+在此，我们可以将Filter、Interceptor和DynamicFeature这三种类型的对象都添加到`extension`属性上，多个之间用逗号分隔。（DynamicFeature是另一个接口，可以方便我们更动态的启用Filter和Interceptor，感兴趣请自行google。）
 
 当然，dubbo自身也支持Filter的概念，但我们这里讨论的Filter和Interceptor更加接近协议实现的底层，相比dubbo的filter，可以做更底层的定制化。
 
@@ -766,13 +772,13 @@ Dubbo rest支持输出所有HTTP请求/响应中的header字段和body消息体�
 在XML配置中添加如下自带的REST filter：
 
 ```xml
-<dubbo:protocol name="rest" port="8888" extension="com.alibaba.dubbo.rpc.protocol.rest.support.LoggingFilter"/>
+<dubbo:protocol name="rest" port="8888" extension="org.apache.dubbo.rpc.protocol.rest.support.LoggingFilter"/>
 ```
 
-然后配置在logging配置中至少为com.alibaba.dubbo.rpc.protocol.rest.support打开INFO级别日志输出，例如，在log4j.xml中配置：
+**然后在logging配置中至少为org.apache.dubbo.rpc.protocol.rest.support打开INFO级别日志输出**，例如，在log4j.xml中配置：
 
 ```xml
-<logger name="com.alibaba.dubbo.rpc.protocol.rest.support">
+<logger name="org.apache.dubbo.rpc.protocol.rest.support">
     <level value="INFO"/>
     <appender-ref ref="CONSOLE"/>
 </logger>
@@ -872,7 +878,7 @@ public class MyValidationExceptionMapper extends RpcExceptionMapper {
 
 Dubbo的REST调用和dubbo中其它某些RPC不同的是，需要在服务代码中添加JAX-RS的annotation（以及JAXB、Jackson的annotation），如果你觉得这些annotation一定程度“污染”了你的服务代码，你可以考虑编写额外的Facade和DTO类，在Facade和DTO上添加annotation，而Facade将调用转发给真正的服务实现类。当然事实上，直接在服务代码中添加annotation基本没有任何负面作用，而且这本身是Java EE的标准用法，另外JAX-RS和JAXB的annotation是属于java标准，比我们经常使用的spring、dubbo等等annotation更没有vendor lock-in的问题，所以一般没有必要因此而引入额外对象。
 
-另外，如果你想用前述的@Context annotation，通过方法参数注入HttpServletRequest（如`public User getUser(@PathParam("id") Long id, @Context HttpServletRequest request)`），这时候由于改变了服务的方法签名，并且HttpServletRequest是REST特有的参数，如果你的服务要支持多种RPC机制的话，则引入额外的Facade类是比较适当的。
+另外，如果你想用前述的@Context annotation，通过方法参数注入HttpServletRequest（如`public User getUser(@PathParam("id") Long id, @Context HttpServletRequest request)`），这时候由于改变了服务的方法签名，并且HttpServletRequest是REST特有的参数，**所以如果你的服务要支持多种RPC机制的话**，则引入额外的Facade类是比较适当的。
 
 当然，在没有添加REST调用之前，你的服务代码可能本身已经就充当了Facade和DTO的角色（至于为什么有些场景需要这些角色，有兴趣可参考[微观SOA：服务设计原则及其实践方式](http://www.infoq.com/cn/articles/micro-soa-1)）。这种情况下，在添加REST之后，如果你再额外添加与REST相关的Facade和DTO，就相当于对原有代码对再一次包装，即形成如下调用链：
 
@@ -1015,7 +1021,7 @@ Dubbo中的REST开发是完全兼容标准JAX-RS的，但其支持的功能目�
 
 ### Dubbo REST的服务能和Dubbo注册中心、监控中心集成吗？
 
-可以的，而且是自动集成的，也就是你在dubbo中开发的所有REST服务都会自动注册到服务册中心和监控中心，可以通过它们做管理。
+可以的，而且是自动集成的，也就是你在dubbo中开发的所有REST服务都会自动注册到注册中心和监控中心，可以通过它们做管理。
 
 但是，只有当REST的消费端也是基于dubbo的时候，注册中心中的许多服务治理操作才能完全起作用。而如果消费端是非dubbo的，自然不受注册中心管理，所以其中很多操作是不会对消费端起作用的。
 
@@ -1136,9 +1142,9 @@ TODO
 | Dubbo: hessian2 | 1.49 | 6701 |
 | Dubbo: fastjson | 1.572 | 6352 |
 
-![no image found](images/rt.png)
+![no image found](sources/images/rt.png)
 
-![no image found](images/tps.png)
+![no image found](sources/images/tps.png)
 
 
 仅就目前的结果，一点简单总结：
@@ -1182,19 +1188,19 @@ TODO
 初步看法，摘自http://www.infoq.com/cn/news/2014/10/dubbox-open-source?utm_source=infoq&utm_medium=popular_links_homepage#theCommentsSection
 
 > 谢谢，对于jax-rs和spring mvc，其实我对spring mvc的rest支持还没有太深入的看过，说点初步想法，请大家指正：
-
+>
 > spring mvc也支持annotation的配置，其实和jax-rs看起来是非常非常类似的。
-
+>
 > 我个人认为spring mvc相对更适合于面向web应用的restful服务，比如被AJAX调用，也可能输出HTML之类的，应用中还有页面跳转流程之类，spring mvc既可以做好正常的web页面请求也可以同时处理rest请求。但总的来说这个restful服务是在展现层或者叫web层之类实现的
-
+>
 > 而jax-rs相对更适合纯粹的服务化应用，也就是传统Java EE中所说的中间层服务，比如它可以把传统的EJB发布成restful服务。在spring应用中，也就把spring中充当service之类的bean直接发布成restful服务。总的来说这个restful服务是在业务、应用层或者facade层。而MVC层次和概念在这种做比如（后台）服务化的应用中通常是没有多大价值的。
-
+>
 > 当然jax-rs的有些实现比如jersey，也试图提供mvc支持，以更好的适应上面所说的web应用，但应该是不如spring mvc。
-
+>
 > 在dubbo应用中，我想很多人都比较喜欢直接将一个本地的spring service bean（或者叫manager之类的）完全透明的发布成远程服务，则这里用JAX-RS是更自然更直接的，不必额外的引入MVC概念。当然，先不讨论透明发布远程服务是不是最佳实践，要不要添加facade之类。
-
+>
 > 当然，我知道在dubbo不支持rest的情况下，很多朋友采用的架构是spring mvc restful调用dubbo (spring) service来发布restful服务的。这种方式我觉得也非常好，只是如果不修改spring mvc并将其与dubbo深度集成，restful服务不能像dubbo中的其他远程调用协议比如webservices、dubbo rpc、hessian等等那样，享受诸多高级的服务治理的功能，比如：注册到dubbo的服务注册中心，通过dubbo监控中心监控其调用次数、TPS、响应时间之类，通过dubbo的统一的配置方式控制其比如线程池大小、最大连接数等等，通过dubbo统一方式做服务流量控制、权限控制、频次控制。另外spring mvc仅仅负责服务端，而在消费端，通常是用spring restTemplate，如果restTemplate不和dubbo集成，有可能像dubbo服务客户端那样自动或者人工干预做服务降级。如果服务端消费端都是dubbo系统，通过spring的rest交互，如果spring rest不深度整合dubbo，则不能用dubbo统一的路由分流等功能。
-
+>
 > 当然，其实我个人认为这些东西不必要非此即彼的。我听说spring创始人rod johnson总是爱说一句话，the customer is always right，其实与其非要探讨哪种方式更好，不如同时支持两种方式就是了，所以原来在文档中也写过计划支持spring rest annoation，只是不知道具体可行性有多高。
 
 ## 未来

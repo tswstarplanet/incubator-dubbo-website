@@ -4,7 +4,7 @@ The service container is a standalone launcher because the backend service does 
 
 The service container is just a simple Main method and loads a simple Spring container to expose the service.
 
-The content of Service container can be extended, built-in spring, jetty, log4j etc..  This can be expanded with [Container Extension Points](http://dubbo.apache.org/books/dubbo-dev-book-en/impls/container.html). Configure it with the -D parameter in the java command or `dubbo.properties`.
+The content of Service container can be extended, built-in spring, jetty, log4j etc..  This can be expanded with [Container Extension Points](http://dubbo.apache.org/en-us/docs/dev/impls/container.html). Configure it with the -D parameter in the java command or `dubbo.properties`.
 
 ## Container type
 
@@ -13,8 +13,8 @@ The content of Service container can be extended, built-in spring, jetty, log4j 
 * Automatically load all spring configurations in the `META-INF/spring`.
 
     ```properties
-dubbo.spring.config=classpath*:META-INF/spring/*.xml
-```
+    dubbo.spring.config=classpath*:META-INF/spring/*.xml
+    ```
 
 ### Jetty Container
 
@@ -38,20 +38,20 @@ dubbo.spring.config=classpath*:META-INF/spring/*.xml
 load spring by default.
 
 ```sh
-java com.alibaba.dubbo.container.Main
+java org.apache.dubbo.container.Main
 ```
 
 Load the container that passed in by the main method
 
 ```sh
-java com.alibaba.dubbo.container.Main spring jetty log4j
+java org.apache.dubbo.container.Main spring jetty log4j
 ```
 
 Load the container that passed in by the JVM option.
 
 
 ```sh
-java com.alibaba.dubbo.container.Main -Ddubbo.container=spring,jetty,log4j
+java org.apache.dubbo.container.Main -Ddubbo.container=spring,jetty,log4j
 ```
 
 Load the container that passed in by `dubbo.properties` in the classpath.

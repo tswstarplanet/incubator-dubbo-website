@@ -24,6 +24,7 @@
       height: 50px;
     }
     .cols-container {
+      margin-bottom: 60px;
       .col {
         display: inline-block;
         box-sizing: border-box;
@@ -36,11 +37,15 @@
       .col-6 {
         width: 25%;
       }
+      .col-4 {
+        width: 16.666667%;
+      }
       h3 {
         font-family: Avenir-Heavy;
         font-size: 18px;
         color: #333;
         line-height: 18px;
+        margin-bottom: 20px;
       }
       p {
         font-family: Avenir-Medium;

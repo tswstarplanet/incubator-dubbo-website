@@ -18,7 +18,7 @@ Dubbo 改进了 JDK 标准的 SPI 的以下问题：
 
 ### 示例：
 
-以扩展 Dubbo 的协议为例，在协议的实现 jar 包内放置文本文件：`META-INF/dubbo/com.alibaba.dubbo.rpc.Protocol`，内容为：
+以扩展 Dubbo 的协议为例，在协议的实现 jar 包内放置文本文件：`META-INF/dubbo/org.apache.dubbo.rpc.Protocol`，内容为：
 
 ```properties
 xxx=com.alibaba.xxx.XxxProtocol
@@ -29,9 +29,9 @@ xxx=com.alibaba.xxx.XxxProtocol
 ```java
 package com.alibaba.xxx;
  
-import com.alibaba.dubbo.rpc.Protocol;
+import org.apache.dubbo.rpc.Protocol;
  
-public class XxxProtocol implemenets Protocol { 
+public class XxxProtocol implements Protocol { 
     // ...
 }
 ```
@@ -55,12 +55,12 @@ Wrapper类内容：
 ```java
 package com.alibaba.xxx;
  
-import com.alibaba.dubbo.rpc.Protocol;
+import org.apache.dubbo.rpc.Protocol;
  
-public class XxxProtocolWrapper implemenets Protocol {
+public class XxxProtocolWrapper implements Protocol {
     Protocol impl;
  
-    public XxxProtocol(Protocol protocol) { impl = protocol; }
+    public XxxProtocolWrapper(Protocol protocol) { impl = protocol; }
  
     // 接口方法做一个操作后，再调用extension的方法
     public void refer() {
@@ -100,7 +100,7 @@ public interface WheelMaker {
 `CarMaker` 的一个实现类：
 
 ```java
-public class RaceCarMaker implemenets CarMaker {
+public class RaceCarMaker implements CarMaker {
     WheelMaker wheelMaker;
  
     public setWheelMaker(WheelMaker wheelMaker) {
@@ -116,7 +116,7 @@ public class RaceCarMaker implemenets CarMaker {
 }
 ```
 
-`ExtensionLoader` 加载 `CarMaker` 的扩展点实现 `RaceCar` 时，`setWheelMaker` 方法的 `WheelMaker` 也是扩展点则会注入 `WheelMaker` 的实现。
+`ExtensionLoader` 加载 `CarMaker` 的扩展点实现 `RaceCarMaker` 时，`setWheelMaker` 方法的 `WheelMaker` 也是扩展点则会注入 `WheelMaker` 的实现。
 
 这里带来另一个问题，`ExtensionLoader` 要注入依赖扩展点时，如何决定要注入依赖扩展点的哪个实现。在这个示例中，即是在多个`WheelMaker` 的实现中要注入哪个。
 
@@ -149,7 +149,7 @@ public interface WheelMaker {
 `CarMaker` 的一个实现类：
 
 ```java
-public class RaceCarMaker implemenets CarMaker {
+public class RaceCarMaker implements CarMaker {
     WheelMaker wheelMaker;
  
     public setWheelMaker(WheelMaker wheelMaker) {
@@ -197,8 +197,8 @@ public interface Transporter {
 对于集合类扩展点，比如：`Filter`, `InvokerListener`, `ExportListener`, `TelnetHandler`, `StatusChecker` 等，可以同时加载多个实现，此时，可以用自动激活来简化配置，如：
 
 ```java
-import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.dubbo.rpc.Filter;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Filter;
  
 @Activate // 无条件自动激活
 public class XxxFilter implements Filter {
@@ -209,8 +209,8 @@ public class XxxFilter implements Filter {
 或：
 
 ```java
-import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.dubbo.rpc.Filter;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Filter;
  
 @Activate("xxx") // 当配置了xxx参数，并且参数为有效值时激活，比如配了cache="lru"，自动激活CacheFilter。
 public class XxxFilter implements Filter {
@@ -221,8 +221,8 @@ public class XxxFilter implements Filter {
 或：
 
 ```java
-import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.dubbo.rpc.Filter;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Filter;
  
 @Activate(group = "provider", value = "xxx") // 只对提供方激活，group可选"provider"或"consumer"
 public class XxxFilter implements Filter {

@@ -1,7 +1,12 @@
+---
+title: 快速启动
+keywords: XML configuration, Consumer, Provider
+description: 使用 XML 配置方式快速上手 Dubbo
+---
 
 # 快速启动
 
-Dubbo 采用全 Spring 配置方式，透明化接入应用，对应用没有任何 API 侵入，只需用 Spring 加载 Dubbo 的配置即可，Dubbo 基于 Spring 的 Schema 扩展进行加载。
+Dubbo 采用全 Spring 配置方式，透明化接入应用，对应用没有任何 API 侵入，只需用 Spring 加载 Dubbo 的配置即可，Dubbo 基于 [Spring 的 Schema 扩展](https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/xsd-configuration.html) 进行加载。
 
 如果不想使用 Spring 配置，可以通过 [API 的方式](./configuration/api.md) 进行调用。
 
@@ -14,7 +19,7 @@ Dubbo 采用全 Spring 配置方式，透明化接入应用，对应用没有任
 DemoService.java [^1]：
 
 ```java
-package com.alibaba.dubbo.demo;
+package org.apache.dubbo.demo;
 
 public interface DemoService {
     String sayHello(String name);
@@ -27,9 +32,9 @@ DemoServiceImpl.java [^2]：
 
 ```java
 
-package com.alibaba.dubbo.demo.provider;
+package org.apache.dubbo.demo.provider;
  
-import com.alibaba.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.DemoService;
  
 public class DemoServiceImpl implements DemoService {
     public String sayHello(String name) {
@@ -59,10 +64,10 @@ provider.xml：
     <dubbo:protocol name="dubbo" port="20880" />
  
     <!-- 声明需要暴露的服务接口 -->
-    <dubbo:service interface="com.alibaba.dubbo.demo.DemoService" ref="demoService" />
+    <dubbo:service interface="org.apache.dubbo.demo.DemoService" ref="demoService" />
  
     <!-- 和本地bean一样实现服务 -->
-    <bean id="demoService" class="com.alibaba.dubbo.demo.provider.DemoServiceImpl" />
+    <bean id="demoService" class="org.apache.dubbo.demo.provider.DemoServiceImpl" />
 </beans>
 ```
 
@@ -84,7 +89,7 @@ public class Provider {
 
 ## 服务消费者
 
-完整安装步骤，请参见：[示例消费者安装](http://dubbo.apache.org/books/dubbo-admin-book/install/consumer-demo.html)
+完整安装步骤，请参见：[示例消费者安装](../admin/install/consumer-demo.md)
 
 ### 通过 Spring 配置引用远程服务
 
@@ -104,7 +109,7 @@ consumer.xml：
     <dubbo:registry address="multicast://224.5.6.7:1234" />
  
     <!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
-    <dubbo:reference id="demoService" interface="com.alibaba.dubbo.demo.DemoService" />
+    <dubbo:reference id="demoService" interface="org.apache.dubbo.demo.DemoService" />
 </beans>
 ```
 
@@ -114,7 +119,7 @@ Consumer.java [^3]：
 
 ```java
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import com.alibaba.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.DemoService;
  
 public class Consumer {
     public static void main(String[] args) throws Exception {

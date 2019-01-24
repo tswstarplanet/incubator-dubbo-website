@@ -138,13 +138,13 @@ public interface ValidationService {
 ### Validate Parameter on the client
 
 ```xml
-<dubbo:reference id="validationService" interface="com.alibaba.dubbo.examples.validation.api.ValidationService" validation="true" />
+<dubbo:reference id="validationService" interface="org.apache.dubbo.examples.validation.api.ValidationService" validation="true" />
 ```
 
 ### Validate Parameter on the server
 
 ```xml
-<dubbo:service interface="com.alibaba.dubbo.examples.validation.api.ValidationService" ref="validationService" validation="true" />
+<dubbo:service interface="org.apache.dubbo.examples.validation.api.ValidationService" ref="validationService" validation="true" />
 ```
 
 ## Validate Exception 
@@ -155,9 +155,9 @@ import javax.validation.ConstraintViolationException;
  
 import org.springframework.context.support.ClassPathXmlApplicationContext;
  
-import com.alibaba.dubbo.examples.validation.api.ValidationParameter;
-import com.alibaba.dubbo.examples.validation.api.ValidationService;
-import com.alibaba.dubbo.rpc.RpcException;
+import org.apache.dubbo.examples.validation.api.ValidationParameter;
+import org.apache.dubbo.examples.validation.api.ValidationService;
+import org.apache.dubbo.rpc.RpcException;
  
 public class ValidationConsumer {   
     public static void main(String[] args) throws Exception {
@@ -179,5 +179,5 @@ public class ValidationConsumer {
 }
 ```
 
-[^1]: Support since `2.1.0` version. If you want to know how to use it, refer to  [Sample code in dubbo project] (https://github.com/apache/incubator-dubbo/tree/master/dubbo-test/dubbo-test-examples/src/main/java/com/alibaba/dubbo/examples/validation)
-[^2]: The validation method is extensible, refer to [Developer Extension](https://github.com/apache/incubator-dubbo/tree/master/dubbo-test/dubbo-test-examples/src/main/java/com/alibaba/dubbo/examples/validation) in the developer's manual.
+[^1]: Support since `2.1.0` version. If you want to know how to use it, refer to  [Sample code in dubbo project] (https://github.com/apache/incubator-dubbo-samples/tree/master/dubbo-samples-validation)
+[^2]: The validation method is extensible, refer to [Developer Extension](http://dubbo.apache.org/zh-cn/docs/dev/impls/validation.html) in the developer's manual.

@@ -4,7 +4,7 @@
 
 服务容器只是一个简单的 Main 方法，并加载一个简单的 Spring 容器，用于暴露服务。
 
-服务容器的加载内容可以扩展，内置了 spring, jetty, log4j 等加载，可通过[容器扩展点](http://dubbo.apache.org/books/dubbo-dev-book/impls/container.html)进行扩展。配置配在 java 命令的 -D 参数或者 `dubbo.properties` 中。
+服务容器的加载内容可以扩展，内置了 spring, jetty, log4j 等加载，可通过[容器扩展点](http://dubbo.apache.org/zh-cn/docs/dev/impls/container.html)进行扩展。配置配在 java 命令的 -D 参数或者 `dubbo.properties` 中。
 
 ## 容器类型
 
@@ -14,8 +14,8 @@
 * 配置 spring 配置加载位置：
 
     ```properties
-dubbo.spring.config=classpath*:META-INF/spring/*.xml
-```
+    dubbo.spring.config=classpath*:META-INF/spring/*.xml
+    ```
 
 ### Jetty Container
 
@@ -39,19 +39,19 @@ dubbo.spring.config=classpath*:META-INF/spring/*.xml
 缺省只加载 spring
 
 ```sh
-java com.alibaba.dubbo.container.Main
+java org.apache.dubbo.container.Main
 ```
 
 通过 main 函数参数传入要加载的容器
 
 ```sh
-java com.alibaba.dubbo.container.Main spring jetty log4j
+java org.apache.dubbo.container.Main spring jetty log4j
 ```
 
 通过 JVM 启动参数传入要加载的容器
 
 ```sh
-java com.alibaba.dubbo.container.Main -Ddubbo.container=spring,jetty,log4j
+java org.apache.dubbo.container.Main -Ddubbo.container=spring,jetty,log4j
 ```
 
 通过 classpath 下的 `dubbo.properties` 配置传入要加载的容器

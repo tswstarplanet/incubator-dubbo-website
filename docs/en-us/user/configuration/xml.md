@@ -14,8 +14,8 @@ About the XML configuration items, see：[XML References](../references/xml/intr
     <dubbo:application name="hello-world-app"  />  
     <dubbo:registry address="multicast://224.5.6.7:1234" />  
     <dubbo:protocol name="dubbo" port="20880" />  
-    <dubbo:service interface="com.alibaba.dubbo.demo.DemoService" ref="demoServiceLocal" />  
-    <dubbo:reference id="demoServiceRemote" interface="com.alibaba.dubbo.demo.DemoService" />  
+    <dubbo:service interface="org.apache.dubbo.demo.DemoService" ref="demoServiceLocal" />  
+    <dubbo:reference id="demoServiceRemote" interface="org.apache.dubbo.demo.DemoService" />  
 </beans>
 ```
 
@@ -45,7 +45,7 @@ Or:
 
 tag  | purpose | introduction
 ------------- | ------------- | -------------
-`<dubbo:service/>` | Service Export  | Used to export service, define service metadata, export service with mutiple protocols, register service to multiple registries
+`<dubbo:service/>` | Service Export  | Used to export service, define service metadata, export service with multiple protocols, register service to multiple registries
 `<dubbo:reference/>`  | Service Reference  | Used to create a remote proxy, subscribe to multiple registries
 `<dubbo:protocol/>`  | Protocol Config  | Configure the protocol for services on provider side, the consumer side follows.
 `<dubbo:application/>`  | Application Config  | Applies to both provider and consumer.

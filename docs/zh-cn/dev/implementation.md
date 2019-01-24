@@ -23,7 +23,7 @@
 
 #### 2. 向注册中心暴露服务：
 
-在有注册中心，需要注册提供者地址的情况下 [^2]，`ServiceConfig` 解析出的 URL 的格式为: `registry://registry-host/com.alibaba.dubbo.registry.RegistryService?export=URL.encode("dubbo://service-host/com.foo.FooService?version=1.0.0")`，
+在有注册中心，需要注册提供者地址的情况下 [^2]，`ServiceConfig` 解析出的 URL 的格式为: `registry://registry-host/org.apache.dubbo.registry.RegistryService?export=URL.encode("dubbo://service-host/com.foo.FooService?version=1.0.0")`，
 
 基于扩展点自适应机制，通过 URL 的 `registry://` 协议头识别，就会调用  `RegistryProtocol` 的 `export()` 方法，将 `export` 参数中的提供者 URL，先注册到注册中心。
 
@@ -40,7 +40,7 @@
 #### 2. 从注册中心发现引用服务：
 
 在有注册中心，通过注册中心发现提供者地址的情况下 [^4]，`ReferenceConfig` 解析出的 URL 的格式为：
-`registry://registry-host/com.alibaba.dubbo.registry.RegistryService?refer=URL.encode("consumer://consumer-host/com.foo.FooService?version=1.0.0")`。
+`registry://registry-host/org.apache.dubbo.registry.RegistryService?refer=URL.encode("consumer://consumer-host/com.foo.FooService?version=1.0.0")`。
 
 基于扩展点自适应机制，通过 URL 的 `registry://` 协议头识别，就会调用 `RegistryProtocol` 的 `refer()` 方法，基于 `refer` 参数中的条件，查询提供者 URL，如：
 `dubbo://service-host/com.foo.FooService?version=1.0.0`。
@@ -134,7 +134,78 @@ public class DemoServiceImpl implements DemoService {
 
 ### 协议头约定
 
-![/dev-guide/images/dubbo_protocol_header.jpg](sources/images/dubbo_protocol_header.jpg)
+![/dev-guide/images/dubbo_protocol_header.jpg](sources/images/dubbo_protocol_header.png)
+
+
+- Magic - Magic High & Magic Low (16 bits)
+  
+  Identifies dubbo protocol with value: 0xdabb
+  
+- Req/Res (1 bit)
+  
+  Identifies this is a request or response. Request - 1; Response - 0.
+  
+- 2 Way (1 bit)
+  
+  Only useful when Req/Res is 1 (Request), expect for a return value from server or not. Set to 1 if need a return value from server.
+  
+- Event (1 bit)
+  
+  Identifies an event message or not, for example, heartbeat event. Set to 1 if this is an event.
+  
+- Serialization ID (5 bit)
+  
+  Identifies serialization type: the value for fastjson is 6.
+  
+- Status (8 bits)
+  
+  Only useful when  Req/Res is 0 (Response), identifies the status of response
+  
+  - 20 - OK
+  - 30 - CLIENT_TIMEOUT
+  - 31 - SERVER_TIMEOUT
+  - 40 - BAD_REQUEST
+  - 50 - BAD_RESPONSE
+  - 60 - SERVICE_NOT_FOUND
+  - 70 - SERVICE_ERROR
+  - 80 - SERVER_ERROR
+  - 90 - CLIENT_ERROR
+  - 100 - SERVER_THREADPOOL_EXHAUSTED_ERROR
+    
+- Request ID (64 bits)
+  
+  Identifies an unique request. Numeric (long).
+  
+- Data Length (32)
+  
+  Length of the content (the variable part) after serialization, counted by bytes. Numeric (integer).
+  
+- Variable Part
+  
+  Each part is a byte[] after serialization with specific serialization type, identifies by Serialization ID.
+  
+Every part is a byte[] after serialization with specific serialization type, identifies by Serialization ID
+
+1. If the content is a Request (Req/Res = 1), each part consists of the content, in turn is:
+   - Dubbo version
+   - Service name
+   - Service version
+   - Method name
+   - Method parameter types
+   - Method arguments
+   - Attachments 
+
+1. If the content is a Response (Req/Res = 0), each part consists of the content, in turn is:
+   - Return value type, identifies what kind of value returns from server side: RESPONSE_NULL_VALUE - 2, RESPONSE_VALUE - 1, RESPONSE_WITH_EXCEPTION - 0.
+   -  Return value, the real value returns from server.
+
+
+**注意：**对于(Variable Part)变长部分，当前版本的dubbo框架使用json序列化时，在每部分内容间额外增加了换行符作为分隔，请选手在Variable Part的每个part后额外增加换行符， 如：
+```
+Dubbo version bytes (换行符)
+Service name bytes  (换行符)
+...
+```
 
 ### 线程派发模型
 

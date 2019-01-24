@@ -138,13 +138,13 @@ public interface ValidationService {
 ### 在客户端验证参数
 
 ```xml
-<dubbo:reference id="validationService" interface="com.alibaba.dubbo.examples.validation.api.ValidationService" validation="true" />
+<dubbo:reference id="validationService" interface="org.apache.dubbo.examples.validation.api.ValidationService" validation="true" />
 ```
 
 ### 在服务器端验证参数
 
 ```xml
-<dubbo:service interface="com.alibaba.dubbo.examples.validation.api.ValidationService" ref="validationService" validation="true" />
+<dubbo:service interface="org.apache.dubbo.examples.validation.api.ValidationService" ref="validationService" validation="true" />
 ```
 
 ## 验证异常信息
@@ -155,9 +155,9 @@ import javax.validation.ConstraintViolationException;
  
 import org.springframework.context.support.ClassPathXmlApplicationContext;
  
-import com.alibaba.dubbo.examples.validation.api.ValidationParameter;
-import com.alibaba.dubbo.examples.validation.api.ValidationService;
-import com.alibaba.dubbo.rpc.RpcException;
+import org.apache.dubbo.examples.validation.api.ValidationParameter;
+import org.apache.dubbo.examples.validation.api.ValidationService;
+import org.apache.dubbo.rpc.RpcException;
  
 public class ValidationConsumer {   
     public static void main(String[] args) throws Exception {
@@ -179,5 +179,5 @@ public class ValidationConsumer {
 }
 ```
 
-[^1]: 自 `2.1.0` 版本开始支持, 如何使用可以参考 [dubbo 项目中的示例代码](https://github.com/apache/incubator-dubbo/tree/master/dubbo-test/dubbo-test-examples/src/main/java/com/alibaba/dubbo/examples/validation)
-[^2]: 验证方式可扩展，扩展方式参见开发者手册中的[验证扩展](http://dubbo.apache.org/books/dubbo-dev-book/impls/validation.html)
+[^1]: 自 `2.1.0` 版本开始支持, 如何使用可以参考 [dubbo 项目中的示例代码](https://github.com/apache/incubator-dubbo-samples/tree/master/dubbo-samples-validation)
+[^2]: 验证方式可扩展，扩展方式参见开发者手册中的[验证扩展](http://dubbo.apache.org/zh-cn/docs/dev/impls/validation.html)
