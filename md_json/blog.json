@@ -321,6 +321,15 @@
       }
     },
     {
+      "filename": "dubbo-heartbeat-design.md",
+      "link": "/zh-cn/blog/dubbo-heartbeat-design.html",
+      "meta": {
+        "title": "Dubbo 现有心跳方案总结以及改进建议",
+        "keywords": "Dubbo, 心跳",
+        "description": "一种心跳，两种设计"
+      }
+    },
+    {
       "filename": "dubbo-integrate-with-hystrix.md",
       "link": "/zh-cn/blog/dubbo-integrate-with-hystrix.html",
       "meta": {
